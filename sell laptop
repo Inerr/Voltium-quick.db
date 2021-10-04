@@ -1,0 +1,30 @@
+const { MessageEmbed } = require('discord.js')
+const db = require('quick.db')
+
+module.exports = {
+    commands: ['sell'],
+    description: 'Vende un objeto',
+    callback: (message, args) => {
+
+        if(args[0].toLowerCase() === '1') {
+            const user = message.author
+            const amount = 4000
+            const laptop = db.fetch(`laptop_${user.id}`)
+            const bal = db.fetch(`dinero_${user.id}`)
+            if(laptop === null || laptop === 0) {
+                return message.channel.send('No tienes una Laptop para vender')
+            } else if(laptop !== null | laptop !== 0) {
+                const embed = new MessageEmbed()
+                .setTitle('Objeto vendido')
+                .setTimestamp()
+                .setColor('GREEN')
+                .setDescription(`
+                
+                `)
+                message.channel.send(embed)
+                db.add(`dinero_${user.id}`, amount)
+                db.subtract(`laptop_${user.id}`)
+            }
+        }
+    }
+}

@@ -1,0 +1,27 @@
+const db = require('quick.db')
+const { MessageEmbed } = require('discord.js')
+const config = require('./Configs/bot.json')
+
+module.exports = (client) => {
+    client.on('message', message => {
+        const prefix = config.prefix
+        if(message.content.toLowerCase() === `${prefix}leaderboard` || message.content.toLowerCase() === `${prefix}lb`) {
+            let money = db.all().filter(data => data.ID.startsWith('dinero')).sort((a, b) => b.data - a.data)
+            money.length = 10
+            var finallb = ""
+            for(var i in money) {
+                finallb += `**${money.indexOf(money[i])+1})** ${client.users.cache.get(money[i].ID.slice(8)).tag} : $${money[i].data.toLocaleString()}\n`
+            }
+
+            const embed = new MessageEmbed()
+            .setTitle('Tabla de Clasificación')
+            .setTimestamp()
+            .setColor('RANDOM')
+            .setDescription(`
+            ${finallb}
+            `)
+            message.channel.send(embed)
+        }
+
+    })
+}
